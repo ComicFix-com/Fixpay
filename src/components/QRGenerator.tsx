@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const QRGenerator = () => {
   const [merchantName, setMerchantName] = useState("");
@@ -31,14 +32,31 @@ const QRGenerator = () => {
 
   return (
     <div id="generator" className="container px-3 sm:px-4 py-6 sm:py-8 md:py-16">
-      <div className="max-w-4xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="max-w-4xl mx-auto"
+      >
         <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 items-start">
-          <div className="space-y-4">
+          <motion.div 
+            initial={{ x: -50 }}
+            whileInView={{ x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="space-y-4"
+          >
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
               Create Your QR Code
             </h2>
             <div className="space-y-3 sm:space-y-4">
-              <div className="space-y-2">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="space-y-2"
+              >
                 <Label htmlFor="merchant" className="text-sm sm:text-base">UPI ID / Merchant Name</Label>
                 <Input
                   id="merchant"
@@ -47,8 +65,13 @@ const QRGenerator = () => {
                   onChange={(e) => setMerchantName(e.target.value)}
                   className="h-11 sm:h-12 text-base sm:text-lg p-2 sm:p-3"
                 />
-              </div>
-              <div className="space-y-2">
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-2"
+              >
                 <Label htmlFor="amount" className="text-sm sm:text-base">Amount (₹)</Label>
                 <Input
                   id="amount"
@@ -58,8 +81,13 @@ const QRGenerator = () => {
                   onChange={(e) => setAmount(e.target.value)}
                   className="h-11 sm:h-12 text-base sm:text-lg p-2 sm:p-3"
                 />
-              </div>
-              <div className="space-y-2">
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="space-y-2"
+              >
                 <Label htmlFor="note" className="text-sm sm:text-base">Note (Optional)</Label>
                 <Input
                   id="note"
@@ -68,13 +96,24 @@ const QRGenerator = () => {
                   onChange={(e) => setNote(e.target.value)}
                   className="h-11 sm:h-12 text-base sm:text-lg p-2 sm:p-3"
                 />
-              </div>
+              </motion.div>
             </div>
-          </div>
-          <div className="bg-white p-3 sm:p-4 md:p-8 rounded-lg shadow-lg text-center mt-4 sm:mt-6 md:mt-0">
-            {merchantName ? (
-              <>
-                <div className="relative">
+          </motion.div>
+          <motion.div 
+            initial={{ x: 50 }}
+            whileInView={{ x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white p-3 sm:p-4 md:p-8 rounded-lg shadow-lg text-center mt-4 sm:mt-6 md:mt-0"
+          >
+            <AnimatePresence>
+              {merchantName ? (
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="relative"
+                >
                   <QRCodeSVG
                     value={generateUPILink()}
                     size={200}
@@ -84,32 +123,48 @@ const QRGenerator = () => {
                     includeMargin
                   />
                   {isGenerating && (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
                       <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
-                    </div>
+                    </motion.div>
                   )}
                   {isGenerated && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <CheckCircle2 className="h-10 w-10 sm:h-12 sm:w-12 text-green-500 animate-in zoom-in duration-200" />
-                    </div>
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <CheckCircle2 className="h-10 w-10 sm:h-12 sm:w-12 text-green-500" />
+                    </motion.div>
                   )}
-                </div>
-                <button
-                  onClick={handleCopyLink}
-                  disabled={isGenerating}
-                  className="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50 touch-manipulation"
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleCopyLink}
+                    disabled={isGenerating}
+                    className="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50 touch-manipulation"
+                  >
+                    {isGenerating ? 'Copying...' : 'Copy UPI Link'}
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="h-40 sm:h-48 md:h-64 flex items-center justify-center text-gray-400 text-sm sm:text-base"
                 >
-                  {isGenerating ? 'Copying...' : 'Copy UPI Link'}
-                </button>
-              </>
-            ) : (
-              <div className="h-40 sm:h-48 md:h-64 flex items-center justify-center text-gray-400 text-sm sm:text-base">
-                Enter merchant details to generate QR code
-              </div>
-            )}
-          </div>
+                  Enter merchant details to generate QR code
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
